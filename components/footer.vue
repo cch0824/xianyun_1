@@ -1,12 +1,16 @@
 <template>
-  <div class="index">
-    首页
-    <router-view></router-view>
+  <div class="footer">
+    底部
   </div>
 </template>
+
 <script>
-export default {};
+export default {
+
+}
 </script>
+
 <style lang="less" scoped>
+
 </style>
 
