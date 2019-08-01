@@ -16,7 +16,7 @@
           <nuxt-link to="/air">国内机票</nuxt-link>
         </el-row>
         <!-- 登录 -->
-        <div class="login" v-if="true">
+        <div class="login" v-if="!$store.state.user.userInfo.token">
           <nuxt-link to="/user/login">登录/注册</nuxt-link>
         </div>
         <!-- 登录后显示的下拉菜单 -->
@@ -24,12 +24,12 @@
           <el-dropdown>
             <span class="el-dropdown-link">
               <img src="http://157.122.54.189:9095/assets/images/avatar.jpg" alt />
-              哈哈哈
+              {{$store.state.user.userInfo.user.nickname}}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>个人中心</el-dropdown-item>
-              <el-dropdown-item>退出</el-dropdown-item>
+              <el-dropdown-item @click.native="$store.commit('user/clearUserInfo')">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -40,7 +40,10 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+    };
+  },
+  mounted () {
   }
 };
 </script>
