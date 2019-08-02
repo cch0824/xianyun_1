@@ -19,13 +19,12 @@
 
             <!-- 登录/用户信息 -->
             <el-row type="flex" align="middle">
-
                 <!-- 如果用户存在则展示用户信息，用户数据来自store -->
-                <el-dropdown v-if="false">
+                <el-dropdown v-if="$store.state.user.userInfo.token">
                     <el-row type="flex" align="middle" class="el-dropdown-link">
                         <nuxt-link to="#">
-                            <img src="http://157.122.54.189:9093/images/pic_sea.jpeg"/>
-                            用户名
+                            <img :src="`${$axios.defaults.baseURL+$store.state.user.userInfo.user.defaultAvatar}`"/>
+                            {{$store.state.user.userInfo.user.nickname}}
                         </nuxt-link>
                         <i class="el-icon-caret-bottom el-icon--right"></i>
                     </el-row>
@@ -34,11 +33,10 @@
                            <nuxt-link to="#">个人中心</nuxt-link>
                         </el-dropdown-item>
                         <el-dropdown-item>
-                            <div>退出</div> 
+                            <div @click="outlogin">退出</div> 
                         </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-
                 <!-- 不存在用户信息展示登录注册链接 -->
                 <nuxt-link class="account-link" to="/user/login" v-else>
                     登录 / 注册 
@@ -49,7 +47,13 @@
 </template>
 <script>
 export default {
-   
+   methods: {
+       //退出登录
+       outlogin(){
+        // 调用清除登录数据的方法
+           this.$store.commit("user/delUserInfo")
+       }
+   }
 }
 </script>
 <style scoped lang="less">
