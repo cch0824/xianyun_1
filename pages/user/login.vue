@@ -5,41 +5,33 @@
       <div class="form-wrapper">
         <!-- 表单头部tab -->
         <el-row type="flex" justify="center" class="tabs">
-          <span
-            :class="{active:curr==index}"
-            v-for="(val,index) in tabArr"
-            :key="index"
-            @click="changeTab(index)"
-          >{{val}}</span>
+          <span v-for="(item,index) in ['登录','注册']" :key="index" 
+          :class="{active:curr==index}"
+          @click="curr=index">
+            {{item}}
+          </span>
         </el-row>
         <!-- 登录功能组件 -->
-        <LoginForm v-if="curr===0" />
+        <Loginform v-if="curr==0" />
         <!-- 注册功能组件 -->
-        <RegisterForm v-else />
+        <Registerform v-else />
       </div>
     </el-row>
   </div>
 </template>
+
 <script>
-// 引入组件
-import RegisterForm from "@/components/user/registerForm";
-import LoginForm from "@/components/user/loginForm";
+import Loginform from "@/components/user/loginForm"
+import Registerform from "@/components/user/registerForm"
 
 export default {
-    // 注册组件
-    components: {
-        RegisterForm,
-        LoginForm
-    },
-  data() {
-    return {
-      curr: 0,
-      tabArr: ["登录", "注册"]
-    };
+  components: {
+    Loginform,
+    Registerform
   },
-  methods: {
-    changeTab(index) {
-        this.curr=index
+  data () {
+    return {
+      curr:0
     }
   }
 };

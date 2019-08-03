@@ -1,26 +1,25 @@
-// 此文件专门用于
-// 1.保存数据的属性 state 是一个对象，返回多个对象，类似组件中的data
-export const state = () => {
-  return {
-    userInfo: {
-      token: '',
-      user: {
-        nickname: "名字"
+// 用户模块store数据管理文件
+// 保存用户数据属性 state
+export const state=()=>{
+  return{
+    userInfo:{
+      token:'',
+      user:{
+        nickname:'',
+        defaultAvatar:''
       }
     }
   }
 }
-//2.同步修改数据 mutations
+// 设置用户数据
 export const mutations= {
-  // 定义方法，设置store数据
-  // state:就是上面的statue，state是默认固定的参数
-  // data：就是调用时传入的参数
-  // 设置保存用户信息
-  setuserInfo(state,data){
+  // 定义方法
+  // 保存登录数据
+  setUserInfo(state,data){
     state.userInfo=data
   },
-  // 清除用户数据(退出时)
-  clearUserInfo(state){
+  // 清除登录数据
+  delUserInfo(state){
     state.userInfo={}
   }
 }

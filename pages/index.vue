@@ -1,55 +1,57 @@
 <template>
   <div class="container">
-    <!-- 轮播图 -->
-    <el-carousel :interval="3000" arrow="alway">
-      <el-carousel-item v-for="(item,index) in banners" :key="index">
+    <!-- 幻灯片 -->
+    <el-carousel :interval="5000" arrow="always">
+      <el-carousel-item v-for="(item,index) in img" :key="index">
         <div
           class="banner-image"
-          :style="`background:url(${$axios.defaults.baseURL+item.url}) center center no-repeat;background-size:contain contain;`"
+          :style="`background:url(${$axios.defaults.baseURL+item.url}) center center no-repeat;background-size:contain contain`"
         ></div>
       </el-carousel-item>
     </el-carousel>
-    <!-- 搜索框 -->
+    <!-- 搜索 -->
     <div class="banner-content">
-      <el-row class="search-bar">
-        <!-- 搜索框tab栏 -->
+      <div class="search-bar">
+        <!-- tab栏 -->
         <el-row type="flex" class="search-tab">
-          <span
-            @click="tabClick(index)"
-            :class="{active:current==index}"
-            v-for="(item,index) in seachTabArr"
-            :key="index"
-          >
-            <i>{{item.title}}</i>
+          <span v-for="(item,index) in searchData" 
+          :key="index" 
+          :class="{active:curr==index}"
+          @click="changeTab(index)">
+            <i>{{item.tab}}</i>
           </span>
         </el-row>
-        <!-- 搜索输入框 -->
-        <el-row type="flex" align="middle"  class="search-input">
-          <input :placeholder="seachTabArr[current].content" />
+        <!-- 输入框 -->
+        <el-row type="flex" align="middle" class="search-input">
+          <input :placeholder="searchData[curr].placeholder" />
           <i class="el-icon-search"></i>
         </el-row>
-      </el-row>
+      </div>
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
     return {
-      banners: [],
-      current: 0,
-      seachTabArr: [
-        { title: "攻略", content: "搜索城市" },
-        { title: "酒店", content: "请输入城市搜索酒店" },
-        { title: "机票", content: "" }
-      ]
+      // tab栏切换
+      curr:0,
+      // 图片数据
+      img: [],
+      // tab栏和搜索框placeholder数据
+      searchData:[
+        {tab:"攻略",placeholder:'搜索城市'},
+        {tab:"酒店",placeholder:'请输入城市搜索酒店'},
+        {tab:"机票",placeholder:''}
+        ]
     };
   },
   methods: {
-    tabClick(index) {
-      this.current = index;
+    changeTab(index){
+      this.curr=index
       if(index==2){
-        this.$router.push('/air')
+        this.$router.push("/air")
       }
     }
   },
@@ -57,13 +59,13 @@ export default {
     this.$axios({
       url: "/scenics/banners"
     }).then(res => {
-      // console.log(res);
-      this.banners = res.data.data;
+      this.img = res.data.data;
     });
   }
 };
 </script>
-<style lang="less" scoped>
+
+<style scoped lang="less">
 .container {
   min-width: 1000px;
   margin: 0 auto;
@@ -134,11 +136,12 @@ export default {
           transform: scale(1.1, 1.3) perspective(0.7em) rotateX(2.2deg);
           transform-origin: bottom left;
           background: rgba(0, 0, 0, 0.5);
-          border-radius: 1px 2px 0 0;
+          border-radius: 1px 2px 0 0px;
           box-sizing: border-box;
         }
       }
     }
+
     .search-input {
       width: 550px;
       height: 46px;
@@ -167,4 +170,3 @@ export default {
   }
 }
 </style>
-
