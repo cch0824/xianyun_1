@@ -2,11 +2,10 @@
   <div class="search-form">
     <!-- 头部tab切换 -->
     <el-row type="flex" class="search-tab">
-      <span :class="{active:curr==index}" v-for="(item,index) in tab" :key="index">
+      <span :class="{active:curr==index}" v-for="(item,index) in tab" :key="index" @click="tabClick(index)">
         <i :class="item.icon">{{item.name}}</i>
       </span>
     </el-row>
-
     <el-form class="search-form-content" label-width="80px" ref="form" :model="form">
       <el-form-item label="出发城市">
         <!-- fetch-suggestions: 当每次在输入框中输入文字时候会触发该事件 -->
@@ -77,6 +76,12 @@ export default {
     };
   },
   methods: {
+    // 点击往返时提示用户不可用
+    tabClick(index){
+      if(index==1){
+        this.$message.warning("暂不支持往返")
+      }
+    },
     // 出发城市输入时触发
     departSearch(value, cb) {
       if (!value) {

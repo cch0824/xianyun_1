@@ -8,7 +8,7 @@
     </el-form-item>
 
     <el-form-item class="form-item" prop="password">
-      <el-input placeholder="密码" type="password" v-model="form.password"></el-input>
+      <el-input placeholder="密ss码" type="password" v-model="form.password"></el-input>
     </el-form-item>
 
     <p class="form-text">
@@ -46,6 +46,7 @@ export default {
           }).then(res => {
             this.$store.commit("user/setUserInfo", res.data);
             // console.log(this.$store.state.user.userInfo);
+            this.$message.success("登录成功，正在跳转页面")
             this.$router.push("/");
           });
         }else{
