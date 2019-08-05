@@ -47,7 +47,7 @@
             </el-col>
             <el-col :span="5" class="price">￥{{item.org_settle_price}}</el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">选定</el-button>
+              <el-button type="warning" size="mini" @click="airOrder(data.id,item.seat_xid)">选定</el-button>
               <p>剩余：{{item.discount}}</p>
             </el-col>
           </el-row>
@@ -88,17 +88,25 @@ export default {
 			return hour+"小时"+min +"分钟"
     }
   },
+  methods: {
+    airOrder(id,seat_xid){
+      this.$router.push({
+        path:`/air/order`,
+        query:{
+          id,
+          seat_xid
+        }
+      })
+    }
+  },
   mounted() {
-		
 	}
 };
 </script>
 
 <style scoped lang="less">
 .flight-item {
-  // border:1px #ddd solid;
   margin-bottom: 10px;
-
   .flight-info {
     padding: 15px;
     cursor: pointer;

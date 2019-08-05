@@ -162,12 +162,19 @@ export default {
         this.$message.warning("出发日期不能为空")
         return
       }
-      
       // 跳转到对应机票页面
       this.$router.push({
         path:'/air/flights',
         query:this.form
       })
+      // 因为本地存储的获取数据不可以用state修改，只能获取，需要深拷贝
+     let arr= [...this.$store.state.air.history]
+    //  将每次请求的参数存储到本地
+     arr.push(this.form)
+    //  保持历史记录为5条
+     arr.length>5?arr.length=5:'';
+    //  调用设置历史记录的方法，将历史记录覆盖原来的历史记录
+     this.$store.commit("air/setHistory",arr)
     }
   }
 };

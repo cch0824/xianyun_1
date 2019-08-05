@@ -4,46 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <div>
-          <!-- 筛选 -->
-          <el-row type="flex" justify="space-between">
-            <el-col
-              :span="10"
-            >单程: {{airDate.departCity}} - {{airDate.destCity}} / {{airDate.departDate}}</el-col>
-            <el-col>
-              <el-row type="flex" justify="center" :gutter="10">
-                <el-col :span="6">
-                  <el-select size="small" v-model="selairport" placeholder="起飞机场" clearable>
-                    <el-option v-for="(item,index) in airport" :key="index" :value="item"></el-option>
-                  </el-select>
-                </el-col>
-
-                <el-col :span="6">
-                  <el-select size="small" v-model="selflightTimes" placeholder="起飞时间" clearable>
-                    <el-option v-for="(item,index) in flightTimes" :key="index" :value="item"></el-option>
-                  </el-select>
-                </el-col>
-
-                <el-col :span="6">
-                  <el-select size="small" v-model="selcompany" placeholder="航空公司" clearable>
-                    <el-option v-for="(item,index) in company" :key="index" :value="item"></el-option>
-                  </el-select>
-                </el-col>
-
-                <el-col :span="6">
-                  <el-select size="small" v-model="value" placeholder="机型" clearable>
-                    <el-option v-for="(item,index) in ['大','中','小']" :key="index" :value="item"></el-option>
-                  </el-select>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
-          <!-- 撤销筛选 -->
-          <div class="clearSearch">
-            筛选:
-            <el-button type="primary" round plain size="small">撤销</el-button>
-          </div>
-        </div>
+        <FlightsFilters :flightall="airData" @getDataList="getDataList" />
 
         <!-- 航班头部布局 -->
         <FlightHeader />
@@ -68,6 +29,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
+        <FlightsAside />
       </div>
     </el-row>
   </section>
@@ -76,24 +38,31 @@
 <script>
 import FlightHeader from "@/components/air/flightHeader";
 import FlightItem from "@/components/air/flightItem";
+import FlightsFilters from "@/components/air/flightsFilters";
+import FlightsAside from "@/components/air/flightsAside";
 
 export default {
   components: {
     FlightHeader,
-    FlightItem
+    FlightItem,
+    FlightsFilters,
+    FlightsAside
   },
   data() {
     return {
-      flightData: [], //航班的全部信息
+      // 所有航班信息(变化)
+      flightAll: {
+        flights: [],
+        info: {},
+        options: {}
+      },
+      // 所有航班信息(不变)
+      airData: {
+        flights: [],
+        info: {},
+        options: {}
+      },
       currList: [], //当前页面显示的航班信息
-      airDate: this.$route.query, //出发日期
-      airport: [], //起飞机场
-      selairport: "",
-      flightTimes: [], //起飞时间
-      selflightTimes: "",
-      company: [], //航空公司
-      selcompany: "",
-      value: "",
       total: 0, //总条数
       pagesize: 2, //每页显示条数
       pagenum: 1 //当前页码
@@ -103,36 +72,45 @@ export default {
     // 改变每页显示条数时触发
     handleSizeChange(size) {
       this.pagesize = size;
-      this.getCurrdata();
+      this.getDataList();
     },
     // 改变当前页码时触发
     handleCurrentChange(num) {
       this.pagenum = num;
-      this.getCurrdata();
+      this.getDataList();
     },
-    getCurrdata() {
-      this.currList = this.flightData.slice(
+    // 请求列表航班数据
+    getAirList() {
+      this.$axios({
+        url: "/airs",
+        params: this.$route.query
+      }).then(res => {
+        this.flightAll = res.data;
+        this.airData = { ...res.data };
+        // console.log(this.flightAll);
+        this.currList = this.flightAll.flights.slice(0, 2);
+        this.total = this.flightAll.flights.length;
+      });
+    },
+    //获取页面航班列表
+    getDataList(arr) {
+      // 如果arr有数据说明有筛选，重新赋值列表数据
+      arr?this.flightAll.flights=arr:''
+      this.currList = this.flightAll.flights.slice(
         (this.pagenum - 1) * this.pagesize,
         this.pagenum * this.pagesize
-      );
+      )
+        this.total = this.flightAll.flights.length;
     }
   },
   mounted() {
-    // console.log(this.$route.query);
-    this.$axios({
-      url: "/airs",
-      params: this.$route.query
-    }).then(res => {
-      // console.log(res);
-      this.flightData = res.data.flights;
-      this.getCurrdata();
-      this.total = this.flightData.length;
-      this.airport = res.data.options.airport; //起飞机场
-      this.company = res.data.options.company; //航空公司
-      this.flightTimes = res.data.options.flightTimes.map(item => {
-        return item.from + ":00-" + item.to + ":00";
-      });
-    });
+    this.getAirList();
+  },
+  watch:{
+    $route(){
+     this.getAirList()
+     this.pagenum=1
+    }
   }
 };
 </script>
