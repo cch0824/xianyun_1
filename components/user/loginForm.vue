@@ -45,9 +45,8 @@ export default {
             data: this.form
           }).then(res => {
             this.$store.commit("user/setUserInfo", res.data);
-            // console.log(this.$store.state.user.userInfo);
             this.$message.success("登录成功，正在跳转页面")
-            this.$router.push("/");
+            this.$router.back();
           });
         }else{
           return false
